@@ -2,13 +2,11 @@ function escapePyramidHead(room) {
   const rowIndex = room.findIndex(row => row.includes("▲"));
   const colIndex = room[rowIndex].indexOf("▲");
   
-  const INF = 123456789;
-
-  const di = [-1, 0, 1, 0];
-  const dj = [0, 1, 0, -1];
+  let INF = 123456789;
+  let di = [-1, 0, 1, 0], dj = [0, 1, 0, -1];
 
   function isValidPosition(i, j) {
-    return room[i] !== undefined && room[i][j] !== undefined;
+    return room[i]?.[j] && room[i][j] !== "#";
   }
   
   function findShortestPath(i, j) {
@@ -17,18 +15,19 @@ function escapePyramidHead(room) {
 
     room[i][j] = '#';
     for(let k = 0; k < 4; k++) {
-      const x = i + di[k];
-      const y = j + dj[k];
-      if(isValidPosition(x, y) && room[x][y] !== "#") {
-        minSteps = Math.min(minSteps , 1 + findShortestPath(x, y));
+      let x = i + di[k];
+      let y = j + dj[k];
+      if(isValidPosition(x, y)) {
+        let a = 1 + findShortestPath(x, y);
+        minSteps = Math.min(minSteps, a);
       }
     }
     room[i][j] = '.';
-
-    return minSteps;
+    
+    return minSteps; 
   }
   
-  const result = findShortestPath(rowIndex, colIndex);
+  let result = findShortestPath(rowIndex, colIndex);
   
   return result === INF ? -1 : result;
 }
