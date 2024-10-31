@@ -1,35 +1,45 @@
 function escapePyramidHead(room) {
-  const rowIndex = room.findIndex(row => row.includes("▲"));
-  const colIndex = room[rowIndex].indexOf("▲");
-  
-  let INF = 123456789;
-  let di = [-1, 0, 1, 0], dj = [0, 1, 0, -1];
+  let startRowIndex = -1,
+    startColIndex,
+    endRowIndex = -1,
+    endColIndex;
+  for (let i = 0; i < room.length; i++) {
+    const v = room[i];
+    if (startRowIndex === -1) {
+      startRowIndex = v.includes("▲") ? i : -1;
+      startColIndex = v.indexOf("▲");
+    }
+    if (endRowIndex === -1) {
+      endRowIndex = v.includes("T") ? i : -1;
+      endColIndex = v.indexOf("T");
+    }
+  }
+
+  const di = [-1, 0, 1, 0],
+    dj = [0, 1, 0, -1];
 
   function isValidPosition(i, j) {
     return room[i]?.[j] && room[i][j] !== "#";
   }
-  
-  function findShortestPath(i, j) {
-    if(room[i][j] === 'T') return 0;
-    let minSteps  = INF;
 
-    room[i][j] = '#';
-    for(let k = 0; k < 4; k++) {
-      let x = i + di[k];
-      let y = j + dj[k];
-      if(isValidPosition(x, y)) {
-        let a = 1 + findShortestPath(x, y);
-        minSteps = Math.min(minSteps, a);
+  const q = [];
+  const distance = {};
+  q.push([startRowIndex, startColIndex]);
+  distance[`${startRowIndex}${startColIndex}`] = 0;
+  while (q.length) {
+    const [i, j] = q.shift();
+    for (let k = 0; k < 4; k++) {
+      const x = i + di[k];
+      const y = j + dj[k];
+      if (isValidPosition(x, y) && distance[`${x}${y}`] === undefined) {
+        q.push([x, y]);
+        distance[`${x}${y}`] = distance[`${i}${j}`] + 1;
       }
     }
-    room[i][j] = '.';
-    
-    return minSteps; 
   }
-  
-  let result = findShortestPath(rowIndex, colIndex);
-  
-  return result === INF ? -1 : result;
+  if (distance[`${endRowIndex}${endColIndex}`] !== undefined)
+    return distance[`${endRowIndex}${endColIndex}`];
+  else return -1;
 }
 
 module.exports = escapePyramidHead;

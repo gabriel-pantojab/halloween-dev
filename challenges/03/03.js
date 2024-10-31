@@ -3,7 +3,7 @@ function findSafestPath(dream) {
   let m = dream[0].length;
   let dp = [];
   for(let i = 0; i<=n; i++) {
-    dp.push(new Array(m+1).fill(123456789));
+    dp.push(new Array(m+1).fill(Infinity));
   }
   dp[1][1] = dream[0][0];
   for(let i = 1; i <= n; i++) {
