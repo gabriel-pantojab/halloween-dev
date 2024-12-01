@@ -1,4 +1,4 @@
-![Halloween dev](halloween-dev.jpg)
+![Halloween dev](./assets/halloween-dev.jpg)
 
 # Programming challenges spooky - Solutions
 
